@@ -24,7 +24,7 @@ import rekab.app.background_locator.pluggables.InitPluggable
 
 class BackgroundLocatorPlugin
     : MethodCallHandler, FlutterPlugin, PluginRegistry.NewIntentListener, ActivityAware {
-    private var context: Context? = null
+    public var context: Context? = null
     private var activity: Activity? = null
 
     companion object {
