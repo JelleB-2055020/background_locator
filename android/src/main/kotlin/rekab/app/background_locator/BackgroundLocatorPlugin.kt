@@ -214,23 +214,25 @@ class BackgroundLocatorPlugin
             Keys.METHOD_PLUGIN_INITIALIZE_SERVICE -> {
                 val args: Map<Any, Any>? = call.arguments()
 
-                // save callback dispatcher to use it when device reboots
-                args?.let { PreferencesManager.saveCallbackDispatcher(context!!, it) }
+                   // save callback dispatcher to use it when device reboots
+                PreferencesManager.saveCallbackDispatcher(context!! , args!!)
+                
 
-                args?.let { initializeService(context!!, it) }
+                
+
+                initializeService(context!!, args)
                 result.success(true)
             }
             Keys.METHOD_PLUGIN_REGISTER_LOCATION_UPDATE -> {
                 val args: Map<Any, Any>? = call.arguments()
 
                 // save setting to use it when device reboots
-                args?.let { PreferencesManager.saveSettings(context!!, it) }
 
-                args?.let {
-                    registerLocator(context!!,
-                        it,
+                PreferencesManager.saveSettings(context!!, args!!)
+
+                registerLocator(context!!,
+                        args,
                         result)
-                }
             }
             Keys.METHOD_PLUGIN_UN_REGISTER_LOCATION_UPDATE -> {
                 unRegisterPlugin(context!!, result)
@@ -243,7 +245,10 @@ class BackgroundLocatorPlugin
                 }
 
                 val args: Map<Any, Any>? = call.arguments()
-                args?.let { updateNotificationText(context!!, it) }
+               
+                    updateNotificationText(context!!, args!!)
+                
+                
                 result.success(true)
             }
             else -> result.notImplemented()
@@ -274,15 +279,12 @@ class BackgroundLocatorPlugin
         val notificationCallback = PreferencesManager.getCallbackHandle(activity!!, Keys.NOTIFICATION_CALLBACK_HANDLE_KEY)
         if (notificationCallback != null && IsolateHolderService.backgroundEngine != null) {
             val backgroundChannel =
-                IsolateHolderService.backgroundEngine?.dartExecutor?.binaryMessenger?.let {
-                    MethodChannel(
-                        it, Keys.BACKGROUND_CHANNEL_ID)
-                }
+                    MethodChannel(IsolateHolderService.backgroundEngine?.dartExecutor?.binaryMessenger!! , Keys.BACKGROUND_CHANNEL_ID)
             activity?.mainLooper?.let {
                 Handler(it)
                         .post {
-                            backgroundChannel?.invokeMethod(Keys.BCM_NOTIFICATION_CLICK,
-                                hashMapOf(Keys.ARG_NOTIFICATION_CALLBACK to notificationCallback))
+                            backgroundChannel.invokeMethod(Keys.BCM_NOTIFICATION_CLICK,
+                                    hashMapOf(Keys.ARG_NOTIFICATION_CALLBACK to notificationCallback))
                         }
             }
         }
@@ -303,8 +305,6 @@ class BackgroundLocatorPlugin
 
     override fun onDetachedFromActivityForConfigChanges() {
     }
-
-
 
 
 }

@@ -39,11 +39,8 @@ internal fun IsolateHolderService.startLocatorService(context: Context) {
     }
 
     backgroundChannel =
-        IsolateHolderService.backgroundEngine?.dartExecutor?.binaryMessenger?.let {
-            MethodChannel(
-                it,
-                Keys.BACKGROUND_CHANNEL_ID)
-        }!!
+            MethodChannel(IsolateHolderService.backgroundEngine?.dartExecutor?.binaryMessenger!!,
+                    Keys.BACKGROUND_CHANNEL_ID)
     backgroundChannel.setMethodCallHandler(this)
 }
 
